@@ -1,9 +1,13 @@
 import asyncio
 import json
 
+POLL = b"?POLL;\r\n"
+WATCH = b'?WATCH={"enable":true,"json":true}\r\n'
+
 
 class GpsdClient:
-    POLL = b"?POLL;\r\n"
+    reader: asyncio.StreamReader
+    writer: asyncio.StreamWriter
 
     def __init__(self, host: str, port: int):
         self.host = host
@@ -12,7 +16,7 @@ class GpsdClient:
     async def connect(self):
         self.reader, self.writer = await asyncio.open_connection(self.host, self.port)
 
-        self.writer.write('?WATCH={"enable":true}\n'.encode())
+        self.writer.write(WATCH)
 
         self.version = json.loads(await self.reader.readline())
         self.devices = json.loads(await self.reader.readline())
@@ -29,12 +33,9 @@ class GpsdClient:
     async def __aexit__(self, exc_type, exc, tb):
         await self.close()
 
-    async def poll(self):
-        self.writer.write(self.POLL)
-        return json.loads(await self.reader.readline())
-
     def __aiter__(self):
+        self.writer.write(POLL)
         return self
 
     async def __anext__(self):
-        return await self.poll()
+        return json.loads(await self.reader.readline())
