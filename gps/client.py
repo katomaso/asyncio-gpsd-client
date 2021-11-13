@@ -18,12 +18,16 @@ class GpsdClient:
         self.devices = json.loads(await self.reader.readline())
         self.watch = json.loads(await self.reader.readline())
 
+    async def close(self):
+        self.writer.close()
+        await self.writer.wait_closed()
+
     async def __aenter__(self):
         await self.connect()
         return self
 
     async def __aexit__(self, exc_type, exc, tb):
-        await self.writer.close()
+        await self.close()
 
     async def poll(self):
         self.writer.write(self.POLL)
