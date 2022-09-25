@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "gpsd-client"
+version = "0.1.0"
+description = ""
+authors = ["Zachary Juang <zachary822@me.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "gpsd_client"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^1.10.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
