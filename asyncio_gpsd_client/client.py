@@ -1,7 +1,7 @@
 import asyncio
 
-from gpsd_client.exceptions import GpsdClientError
-from gpsd_client.schemas import Devices, Response, Version, WatchConfig
+from asyncio_gpsd_client.exceptions import GpsdClientError
+from asyncio_gpsd_client.schemas import Devices, Response, Version, WatchConfig
 
 POLL = "?POLL;\r\n"
 WATCH = "?WATCH={}\r\n"
