@@ -1,7 +1,7 @@
 import asyncio
 
 from asyncio_gpsd_client.exceptions import GpsdClientError
-from asyncio_gpsd_client.schemas import Devices, Response, Version, WatchConfig
+from asyncio_gpsd_client.schemas import TPV, Devices, Response, Sky, Version, Watch
 
 POLL = "?POLL;\r\n"
 WATCH = "?WATCH={}\r\n"
@@ -12,9 +12,10 @@ class GpsdClient:
     writer: asyncio.StreamWriter
     version: Version
     devices: Devices
-    watch: WatchConfig
+    watch: Watch
+    sky: Sky
 
-    def __init__(self, host: str = "127.0.0.1", port: int = 2947, watch_config: WatchConfig = WatchConfig()):
+    def __init__(self, host: str = "127.0.0.1", port: int = 2947, watch_config: Watch = Watch()):
         self.host = host
         self.port = port
 
@@ -28,7 +29,7 @@ class GpsdClient:
     async def connect(self):
         self.reader, self.writer = await asyncio.open_connection(self.host, self.port)
 
-        self.writer.write(WATCH.format(self.watch_config.json(by_alias=True)).encode())
+        self.writer.write(WATCH.format(self.watch_config.json(by_alias=True, exclude={"class_"})).encode())
         await self.writer.drain()
 
         self.version = await self.get_result()
@@ -59,8 +60,8 @@ class GpsdClient:
 
     async def __anext__(self):
         result = await self.get_result()
-        if result.class_ == "TPV":
+        if isinstance(result, TPV):
             return result
-        if result.class_ == "SKY":
+        if isinstance(result, Sky):
             self.sky = result
         return await anext(self)

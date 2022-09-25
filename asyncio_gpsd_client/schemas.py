@@ -12,7 +12,7 @@ class Mode(IntEnum):
     three_d_fix = 3
 
 
-class WatchConfig(BaseModel):
+class Watch(BaseModel):
     class_: Literal["WATCH"] = Field("WATCH", alias="class")
     enable: bool = True
     json_: bool = Field(True, alias="json")
@@ -114,4 +114,4 @@ class Poll(BaseModel):
 
 
 class Response(BaseModel):
-    __root__: Union[Poll, Sky, TPV, Devices, Version, WatchConfig] = Field(discriminator="class_")
+    __root__: Union[Poll, Sky, TPV, Devices, Version, Watch] = Field(discriminator="class_")

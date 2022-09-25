@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "asyncio-gpsd-client"
-version = "0.2.0"
+version = "0.2.1"
 description = "asyncio compatible gpsd client"
 authors = ["Zachary Juang <zachary822@me.com>"]
 license = "MIT"
@@ -26,6 +26,7 @@ plugins = ["pydantic.mypy"]
 
 [tool.isort]
 profile = "black"
+case_sensitive = false
 line_length = 120
 filter_files = true
 
