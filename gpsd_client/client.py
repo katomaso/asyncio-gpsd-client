@@ -1,5 +1,6 @@
 import asyncio
 
+from gpsd_client.exceptions import GpsdClientError
 from gpsd_client.schemas import Devices, Response, Version, WatchConfig
 
 POLL = "?POLL;\r\n"
@@ -18,6 +19,11 @@ class GpsdClient:
         self.port = port
 
         self.watch_config = watch_config
+
+    def __getattr__(self, item):
+        if item in ("reader", "writer"):
+            raise GpsdClientError("Initiate connection with client.connect()")
+        raise AttributeError(item)
 
     async def connect(self):
         self.reader, self.writer = await asyncio.open_connection(self.host, self.port)

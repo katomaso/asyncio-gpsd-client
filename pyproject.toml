@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "gpsd-client"
+name = "asyncio-gpsd-client"
 version = "0.1.0"
-description = ""
+description = "asyncio compatible gpsd client"
 authors = ["Zachary Juang <zachary822@me.com>"]
 license = "MIT"
 readme = "README.md"
