@@ -5,7 +5,7 @@ description = "asyncio compatible gpsd client"
 authors = ["Zachary Juang <zachary822@me.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "gpsd_client"}]
+packages = [{include = "asyncio_gpsd_client"}]
 
 [tool.poetry.urls]
 repository = "https://github.com/zachary822/asyncio-gpsd-client"
