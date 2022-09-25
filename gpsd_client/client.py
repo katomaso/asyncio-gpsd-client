@@ -13,7 +13,7 @@ class GpsdClient:
     devices: Devices
     watch: WatchConfig
 
-    def __init__(self, host: str, port: int, watch_config: WatchConfig = WatchConfig()):
+    def __init__(self, host: str = "127.0.0.1", port: int = 2947, watch_config: WatchConfig = WatchConfig()):
         self.host = host
         self.port = port
 
