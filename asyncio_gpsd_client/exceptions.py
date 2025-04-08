@@ -1,2 +1,0 @@
-class GpsdClientError(Exception):
-    pass

@@ -2,7 +2,7 @@ from datetime import datetime
 from enum import IntEnum
 from typing import Literal, Optional, Union
 
-from pydantic import BaseModel, Extra, Field
+import pydantic
 
 
 class Mode(IntEnum):
@@ -12,19 +12,19 @@ class Mode(IntEnum):
     three_d_fix = 3
 
 
-class Watch(BaseModel):
-    class_: Literal["WATCH"] = Field("WATCH", alias="class")
+class Watch(pydantic.BaseModel):
+    class_: Literal["WATCH"] = pydantic.Field("WATCH", alias="class")
     enable: bool = True
-    json_: bool = Field(True, alias="json")
+    json_: bool = pydantic.Field(True, alias="json")
     split24: bool = False
     raw: int = 0
 
     class Config:
-        extra = Extra.allow
+        extra = pydantic.Extra.allow
 
 
-class Version(BaseModel):
-    class_: Literal["VERSION"] = Field(alias="class")
+class Version(pydantic.BaseModel):
+    class_: Literal["VERSION"] = pydantic.Field(alias="class")
     release: str
     rev: str
     proto_major: int
@@ -35,8 +35,8 @@ class Version(BaseModel):
         return self.proto_major, self.proto_minor
 
 
-class Device(BaseModel):
-    class_: Literal["DEVICE"] = Field(alias="class")
+class Device(pydantic.BaseModel):
+    class_: Literal["DEVICE"] = pydantic.Field(alias="class")
     path: str
     driver: str
     subtype: str
@@ -50,13 +50,13 @@ class Device(BaseModel):
     mincycle: float
 
 
-class Devices(BaseModel):
-    class_: Literal["DEVICES"] = Field(alias="class")
+class Devices(pydantic.BaseModel):
+    class_: Literal["DEVICES"] = pydantic.Field(alias="class")
     devices: list[Device]
 
 
-class TPV(BaseModel):
-    class_: Literal["TPV"] = Field(alias="class")
+class TPV(pydantic.BaseModel):
+    class_: Literal["TPV"] = pydantic.Field(alias="class")
     device: str
     mode: Mode
     time: datetime
@@ -81,7 +81,7 @@ class TPV(BaseModel):
     sep: float
 
 
-class PRN(BaseModel):
+class PRN(pydantic.BaseModel):
     PRN: int
     el: float
     az: float
@@ -91,8 +91,8 @@ class PRN(BaseModel):
     svid: int
 
 
-class Sky(BaseModel):
-    class_: Literal["SKY"] = Field(alias="class")
+class Sky(pydantic.BaseModel):
+    class_: Literal["SKY"] = pydantic.Field(alias="class")
     device: str
     xdop: float
     ydop: float
@@ -105,13 +105,15 @@ class Sky(BaseModel):
     satellites: list[PRN]
 
 
-class Poll(BaseModel):
-    class_: Literal["POLL"] = Field(alias="class")
+class Poll(pydantic.BaseModel):
+    class_: Literal["POLL"] = pydantic.Field(alias="class")
     time: datetime
     active: int
     tpv: list[TPV]
     sky: list[Sky]
 
+GSPD_MESSAGE = Union[Poll, Sky, TPV, Devices, Version, Watch]
+GSPD_RUNTIME_MESSAGE = Union[Sky, TPV]
 
-class Response(BaseModel):
-    __root__: Union[Poll, Sky, TPV, Devices, Version, Watch] = Field(discriminator="class_")
+class Response(pydantic.BaseModel):
+    message: GSPD_MESSAGE = pydantic.Field(discriminator="class_")

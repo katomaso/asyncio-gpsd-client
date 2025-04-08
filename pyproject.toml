@@ -1,34 +1,28 @@
-[tool.poetry]
-name = "asyncio-gpsd-client"
-version = "0.2.2"
-description = "asyncio compatible gpsd client"
-authors = ["Zachary Juang <zachary822@me.com>"]
-license = "MIT"
-readme = "README.md"
-packages = [{include = "asyncio_gpsd_client"}]
-
-[tool.poetry.urls]
-repository = "https://github.com/zachary822/asyncio-gpsd-client"
-
-[tool.poetry.dependencies]
-python = "^3.10"
-pydantic = "^1.10.2"
-
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gpsd-client-async"
+version = "1.0.0"
+description = "asyncio compatible gpsd client"
+requires-python = ">=3.10"
+authors = [
+    {name = "Zachary Juang", email = "zachary822@me.com"},
+    {name = "Tomas Peterka", email = "tomas.peterka@dronetag.com"},
+]
+license = {text = "MIT"}
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "pydantic >=2.9.0, <3.0",
+]
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]
-
-[tool.isort]
-profile = "black"
-case_sensitive = false
-line_length = 120
-filter_files = true
-
-[tool.black]
-line_length = 120
 
 [tool.ruff]
 line-length = 120

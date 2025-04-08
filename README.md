@@ -1,9 +1,12 @@
 # Asycio Gpsd Client
 
+Fork of very well done asyncio-gpsd-client that was unfortunatelly quite out of date.
+I just cleaned it up a bit and updated dependencies.
+
 # Install
 
 ```shell
-pip install asyncio-gpsd-client
+pip install gpsd-client-async
 ```
 
 # Usage
@@ -11,18 +14,12 @@ pip install asyncio-gpsd-client
 ```python
 import asyncio
 
-from asyncio_gpsd_client import GpsdClient
-
-HOST = "127.0.0.1"
-PORT = 2947
-
+import gpsd_client_async as gpsd
 
 async def main():
-    async with GpsdClient(HOST, PORT) as client:
-        print(await client.poll())  # Get gpsd POLL response
-        while True:
-            print(await client.get_result())  # Get gpsd TPV responses
-
+    async with gpsd.GpsdClient() as client:
+        async for message in client:
+            print(message)  # TPV or Sky message
 
 asyncio.run(main())
 ```
