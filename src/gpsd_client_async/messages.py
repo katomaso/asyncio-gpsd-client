@@ -1,15 +1,17 @@
 from datetime import datetime
 from enum import IntEnum
-from typing import Literal, Optional, Union
+import logging
+from typing import Annotated, Literal, Optional, Union
 
 import pydantic
 
+logger = logging.getLogger("gpsda")
 
 class Mode(IntEnum):
     unknown = 0
     no_fix = 1
-    two_d_fix = 2
-    three_d_fix = 3
+    fix2D = 2
+    fix3D = 3
 
 
 class Watch(pydantic.BaseModel):
@@ -19,12 +21,13 @@ class Watch(pydantic.BaseModel):
     split24: bool = False
     raw: int = 0
 
-    class Config:
-        extra = pydantic.Extra.allow
+    model_config = {
+        'extra': 'allow'
+    }
 
 
 class Version(pydantic.BaseModel):
-    class_: Literal["VERSION"] = pydantic.Field(alias="class")
+    class_: Literal["VERSION"] = pydantic.Field("VERSION", alias="class")
     release: str
     rev: str
     proto_major: int
@@ -36,49 +39,51 @@ class Version(pydantic.BaseModel):
 
 
 class Device(pydantic.BaseModel):
-    class_: Literal["DEVICE"] = pydantic.Field(alias="class")
+    class_: Literal["DEVICE"] = pydantic.Field("DEVICE", alias="class")
     path: str
-    driver: str
-    subtype: str
     activated: datetime
-    flags: int
     native: int
     bps: int
     parity: str
     stopbits: int
     cycle: float
-    mincycle: float
+    flags: int = 0
+    driver: Optional[str] = None
+    subtype: Optional[str] = None
+    mincycle: Optional[float] = None
 
 
 class Devices(pydantic.BaseModel):
-    class_: Literal["DEVICES"] = pydantic.Field(alias="class")
+    class_: Literal["DEVICES"] = pydantic.Field("DEVICES", alias="class")
     devices: list[Device]
 
 
 class TPV(pydantic.BaseModel):
-    class_: Literal["TPV"] = pydantic.Field(alias="class")
+    class_: Literal["TPV"] = pydantic.Field("TPV", alias="class")
     device: str
     mode: Mode
-    time: datetime
-    ept: float
-    lat: float
-    lon: float
-    altHAE: float
-    altMSL: float
-    alt: float
-    epx: float
-    epy: float
-    epv: float
-    track: Optional[float]
-    magtrack: Optional[float]
-    magvar: float
-    speed: float
-    climb: float
-    eps: float
-    epc: float
-    geoidSep: float
-    eph: float
-    sep: float
+    time: Optional[datetime] = None  # only inside POLL messages the time is empty
+    leapseconds: int = 0
+    # if the GNSS sensor does not have fix, following fields will be missing
+    lat: Optional[float] = None
+    lon: Optional[float] = None
+    altHAE: Optional[float] = None
+    altMSL: Optional[float] = None
+    alt: Optional[float] = None
+    magvar: Optional[float] = None
+    speed: Optional[float] = None
+    geoidSep: Optional[float] = None
+    sep: Optional[float] = None
+    ept: Optional[float] = None
+    eps: Optional[float] = None
+    epc: Optional[float] = None
+    eph: Optional[float] = None
+    epx: Optional[float] = None
+    epy: Optional[float] = None
+    epv: Optional[float] = None
+    track: Optional[float] = None
+    magtrack: Optional[float] = None
+    climb: Optional[float] = None
 
 
 class PRN(pydantic.BaseModel):
@@ -89,31 +94,37 @@ class PRN(pydantic.BaseModel):
     used: bool
     gnssid: int
     svid: int
+    used: bool
 
 
 class Sky(pydantic.BaseModel):
-    class_: Literal["SKY"] = pydantic.Field(alias="class")
+    class_: Literal["SKY"] = pydantic.Field("SKY", alias="class")
     device: str
-    xdop: float
-    ydop: float
-    vdop: float
-    tdop: float
-    hdop: float
-    gdop: float
-    nSat: int
-    uSat: int
-    satellites: list[PRN]
+    xdop: Optional[float] = None
+    nSat: Optional[int] = None
+    uSat: Optional[int] = None
+    ydop: Optional[float] = None
+    vdop: Optional[float] = None
+    tdop: Optional[float] = None
+    hdop: Optional[float] = None
+    pdop: Optional[float] = None
+    gdop: Optional[float] = None
+    satellites: list[PRN] = []
 
 
 class Poll(pydantic.BaseModel):
-    class_: Literal["POLL"] = pydantic.Field(alias="class")
+    class_: Literal["POLL"] = pydantic.Field("POLL", alias="class")
     time: datetime
     active: int
     tpv: list[TPV]
     sky: list[Sky]
 
-GSPD_MESSAGE = Union[Poll, Sky, TPV, Devices, Version, Watch]
-GSPD_RUNTIME_MESSAGE = Union[Sky, TPV]
 
-class Response(pydantic.BaseModel):
-    message: GSPD_MESSAGE = pydantic.Field(discriminator="class_")
+AnyGPSDMessage = Union[Sky, TPV, Device, Devices, Version, Watch, Poll]
+RuntimeGPSDMessage = Union[Sky, TPV]
+
+Message = pydantic.RootModel[Annotated[AnyGPSDMessage, pydantic.Field(discriminator="class_")]]
+
+def parse(data: str) -> AnyGPSDMessage:
+    logger.debug("Parsiing message %s", data)
+    return Message.model_validate_json(data).root
