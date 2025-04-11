@@ -5,7 +5,7 @@ from typing import Annotated, Literal, Optional, Union
 
 import pydantic
 
-logger = logging.getLogger("gpsda")
+logger = logging.getLogger("agpsd")
 
 class Mode(IntEnum):
     unknown = 0
@@ -126,5 +126,5 @@ RuntimeGPSDMessage = Union[Sky, TPV]
 Message = pydantic.RootModel[Annotated[AnyGPSDMessage, pydantic.Field(discriminator="class_")]]
 
 def parse(data: str) -> AnyGPSDMessage:
-    logger.debug("Parsiing message %s", data)
+    logger.debug("Message %s", data)
     return Message.model_validate_json(data).root
