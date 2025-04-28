@@ -20,6 +20,7 @@ classifiers = [
 dependencies = [
     "pydantic >=2.9.0, <3.0",
 ]
+description-file = "README.md"
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]
