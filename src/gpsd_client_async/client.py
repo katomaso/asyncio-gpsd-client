@@ -55,4 +55,7 @@ class GpsdClient:
         return self
 
     async def __anext__(self) -> Union[messages.TPV, messages.Sky]:
-        return await self.get_result()
+        msg = await self.get_result()
+        while not isinstance(msg , (messages.TPV, messages.Sky)):  # can be Poll message
+            msg = await self.get_result()
+        return msg
