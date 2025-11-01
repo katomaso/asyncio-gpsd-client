@@ -3,11 +3,10 @@
 Fork of very well done asyncio-gpsd-client that was unfortunatelly quite out of date.
 I just cleaned it up a bit and updated dependencies.
 
-GPSd is a unified interface to GNSS modules in Linux. GPSd publishes its data on localhost:2367.
+GPSd is an unified interface to GNSS modules in Linux. GPSd publishes its data on localhost:2367.
 Upon connection, it sends initial data (Devices, Watch, Version messages) that are available in
 GpsdClient instance. The client then provides an async iterator that reports the runtime messages
 TPV (location update) and Sky (status update). For details about messages, refer to `messages.py`.
-
 
 # Install
 
@@ -29,3 +28,7 @@ async def main():
 
 asyncio.run(main())
 ```
+
+## Debugging
+
+The client reports messages to `"agpsd"` logger.
