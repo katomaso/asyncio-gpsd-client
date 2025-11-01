@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gpsd-client-async"
-version = "1.1.0"
+version = "1.1.1"
 description = "asyncio compatible gpsd client"
 requires-python = ">=3.10"
 authors = [
-    {name = "Zachary Juang", email = "zachary822@me.com"},
     {name = "Tomas Peterka", email = "tomas.peterka@dronetag.com"},
+    {name = "Zachary Juang", email = "zachary822@me.com"},
 ]
 license = {text = "MIT"}
 classifiers = [
