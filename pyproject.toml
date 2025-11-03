@@ -11,16 +11,21 @@ authors = [
     {name = "Tomas Peterka", email = "tomas.peterka@dronetag.com"},
     {name = "Zachary Juang", email = "zachary822@me.com"},
 ]
-license = {text = "MIT"}
+license = "MIT"
 classifiers = [
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
     "pydantic >=2.9.0, <3.0",
 ]
-description-file = "README.md"
+dynamic = ["readme"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.dynamic]
+readme = {file = ["README.md"]}
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]

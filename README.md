@@ -1,6 +1,6 @@
 # Asycio GPSd Client
 
-Fork of very well done asyncio-gpsd-client that was unfortunatelly quite out of date.
+Fork of very well done asyncio-gpsd-client that was unfortunately quite out of date.
 I just cleaned it up a bit and updated dependencies.
 
 GPSd is an unified interface to GNSS modules in Linux. GPSd publishes its data on localhost:2367.
