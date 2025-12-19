@@ -10,6 +10,10 @@ def test_parse():
         for line in log:
             print(messages.parse(line))
 
+def test_parse_ublox():
+    with open("test/gpsd_ublox.log") as log:
+        for line in log:
+            print(messages.parse(line))
 
 def test_parse_version():
     version_message = messages.parse('{"class":"VERSION","release":"3.24","rev":"3.24","proto_major":3,"proto_minor":15}')

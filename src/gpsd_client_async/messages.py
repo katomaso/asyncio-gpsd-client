@@ -40,14 +40,14 @@ class Version(pydantic.BaseModel):
 
 class Device(pydantic.BaseModel):
     class_: Literal["DEVICE"] = pydantic.Field("DEVICE", alias="class")
-    path: str
-    activated: datetime
-    native: int
-    bps: int
-    parity: str
+    path: Optional[str] = None
+    activated: Optional[datetime] = None
+    native: Optional[int] = None
+    bps: Optional[int] = None
+    parity: Optional[str] = None
     stopbits: int
-    cycle: float
-    flags: int = 0
+    cycle: Optional[float] = None
+    flags: Optional[int] = None
     driver: Optional[str] = None
     subtype: Optional[str] = None
     mincycle: Optional[float] = None
@@ -60,10 +60,10 @@ class Devices(pydantic.BaseModel):
 
 class TPV(pydantic.BaseModel):
     class_: Literal["TPV"] = pydantic.Field("TPV", alias="class")
-    device: str
+    device: Optional[str] = None
     mode: Mode
     time: Optional[datetime] = None  # only inside POLL messages the time is empty
-    leapseconds: int = 0
+    leapseconds: Optional[int] = None
     # if the GNSS sensor does not have fix, following fields will be missing
     lat: Optional[float] = None
     lon: Optional[float] = None
@@ -88,18 +88,17 @@ class TPV(pydantic.BaseModel):
 
 class PRN(pydantic.BaseModel):
     PRN: int
-    el: float
-    az: float
-    ss: float
-    used: bool
-    gnssid: int
-    svid: int
+    el: Optional[float] = None
+    az: Optional[float] = None
+    ss: Optional[float] = None
+    gnssid: Optional[int] = None
+    svid: Optional[int] = None
     used: bool
 
 
 class Sky(pydantic.BaseModel):
     class_: Literal["SKY"] = pydantic.Field("SKY", alias="class")
-    device: str
+    device: Optional[str] = None
     xdop: Optional[float] = None
     nSat: Optional[int] = None
     uSat: Optional[int] = None
@@ -109,7 +108,7 @@ class Sky(pydantic.BaseModel):
     hdop: Optional[float] = None
     pdop: Optional[float] = None
     gdop: Optional[float] = None
-    satellites: list[PRN] = []
+    satellites: Optional[list[PRN]] = None
 
 
 class Poll(pydantic.BaseModel):
